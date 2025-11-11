@@ -226,9 +226,7 @@ const Navbar = () => {
                   data-aos="fade-left"
                 >
                   {getUserAvatar()}
-                  <span className="text-sm text-gray-700 hidden lg:block">
-                    {user?.displayName || 'User'}
-                  </span>
+                  
                 </button>
 
                 {isDropdownOpen && (

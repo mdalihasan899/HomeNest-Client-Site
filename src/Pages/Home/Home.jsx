@@ -9,18 +9,18 @@ import 'aos/dist/aos.css';
 
 // React Icons alternative (if you choose this option)
 import { 
-  FaHome, 
   FaShieldAlt, 
   FaMapMarkerAlt, 
   FaDollarSign,
   FaStar,
   FaCheck,
-  FaPhone,
-  FaEnvelope,
   FaBed,
   FaBath,
   FaRulerCombined
 } from 'react-icons/fa';
+import LatestProperties from '../../Components/LatestProperties/LatestProperties';
+
+const latestPropertiesPromise = fetch('http://localhost:3000/latest-properties').then(res => res.json())
 
 const Home = () => {
   const [featuredProperties, setFeaturedProperties] = useState([]);
@@ -185,7 +185,7 @@ const Home = () => {
         </Swiper>
       </section>
 
-      {/* Featured Properties Section */}
+      {/* Latest Properties Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -193,7 +193,7 @@ const Home = () => {
               className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
               data-aos="fade-up"
             >
-              Featured Properties
+              Latest Properties
             </h2>
             <p 
               className="text-gray-600 text-lg max-w-2xl mx-auto"
@@ -204,53 +204,7 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProperties.map((property, index) => (
-              <div
-                key={property.id}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <img
-                  src={property.image}
-                  alt={property.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-semibold text-gray-800">
-                      {property.title}
-                    </h3>
-                    <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded">
-                      {property.type}
-                    </span>
-                  </div>
-                  <p className="text-2xl font-bold text-blue-600 mb-2">
-                    {property.price}
-                  </p>
-                  <p className="text-gray-600 mb-4 flex items-center">
-                    <FaMapMarkerAlt className="w-4 h-4 mr-2" />
-                    {property.location}
-                  </p>
-                  <div className="flex justify-between text-sm text-gray-500 border-t pt-3">
-                    <span className="flex items-center">
-                      <FaBed className="w-4 h-4 mr-1" />
-                      {property.bedrooms} Beds
-                    </span>
-                    <span className="flex items-center">
-                      <FaBath className="w-4 h-4 mr-1" />
-                      {property.bathrooms} Baths
-                    </span>
-                    <span className="flex items-center">
-                      <FaRulerCombined className="w-4 h-4 mr-1" />
-                      {property.area}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LatestProperties latestPropertiesPromise={latestPropertiesPromise}></LatestProperties>
         </div>
       </section>
 

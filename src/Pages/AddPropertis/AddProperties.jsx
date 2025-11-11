@@ -1,7 +1,9 @@
+import { onAuthStateChanged } from 'firebase/auth';
 import React, { useState, useEffect } from 'react';
 import { FaHome, FaDollarSign, FaMapMarkerAlt, FaImage, FaPlus } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { auth } from '../../Firebase/firebase.config';
 
 const AddProperty = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,8 @@ const AddProperty = () => {
     userName: 'John Doe' // This would come from auth context
   });
 
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,20 +38,42 @@ const AddProperty = () => {
     'Other'
   ];
 
-  // In a real app, you would get this from authentication context
+  // Track user login/logout with better state handling
   useEffect(() => {
-    // Mock user data - replace with actual user data from your auth system
-    const userData = {
-      email: 'john.doe@example.com',
-      name: 'John Doe'
-    };
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
 
-    setFormData(prev => ({
-      ...prev,
-      userEmail: userData.email,
-      userName: userData.name
-    }));
+      // console.log(currentUser);
+
+      if (currentUser) {
+        // Force refresh to get latest user data
+        try {
+          await currentUser.reload();
+          const updatedUser = auth.currentUser;
+          setUser({
+            email: updatedUser.email,
+            displayName: updatedUser.displayName,
+          });
+
+
+          setFormData(prev => ({
+            ...prev,
+            userEmail: updatedUser.email,
+            userName: updatedUser.displayName
+          }));
+        } catch (error) {
+          console.error('Error refreshing user:', error);
+          setUser(currentUser);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -120,9 +146,55 @@ const AddProperty = () => {
       return;
     }
 
-    setIsSubmitting(true);
 
+    const currentTime = new Date().toISOString();
+    const newPropertis = {
+      seller_email: formData.email,
+      seller_name: formData.userName,
+      Property_Name: formData.propertyName,
+      Category: formData.category,
+      Description: formData.description,
+      Image: formData.imageLink,
+      Location: formData.location,
+      Price: formData.price,
+      createdAt: currentTime,
+    };
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch('http://localhost:3000/properties', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPropertis),
+      });
+
+      if (response.ok) {
+        toast.success('Property added successfully!');
+        setFormData({
+          email: '',
+          userName: '',
+          propertyName: '',
+          category: '',
+          description: '',
+          imageLink: '',
+          location: '',
+          price: '',
+        });
+      } else {
+        toast.error('Failed to add property');
+      }
+    } catch (error) {
+      console.error('Error adding property:', error);
+      toast.error('Something went wrong!');
+    } finally {
+      // ✅ Add complete হলে submit button পুনরায় enable হবে
+      setIsSubmitting(false);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 text-black ">
@@ -130,13 +202,8 @@ const AddProperty = () => {
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8" data-aos="fade-up">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <FaPlus className="w-8 h-8 text-blue-600" />
-              </div>
-            </div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              List Your Property
+              Add Your Property
             </h1>
             <p className="text-gray-600 text-lg">
               Fill out the form below to add your property to HomeNest
@@ -350,8 +417,8 @@ const AddProperty = () => {
                   type="submit"
                   disabled={isSubmitting}
                   className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition duration-300 ${isSubmitting
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
                     } text-white shadow-lg`}
                 >
                   {isSubmitting ? (

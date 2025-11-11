@@ -26,13 +26,13 @@ const Login = () => {
     }, []);
 
     // Email and Password auth
-    const handleLogin= (event) =>{
+    const handleLogin = (event) => {
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
         console.log(email, password);
 
-         const newErrors = {};
+        const newErrors = {};
 
         if (!email.trim()) {
             newErrors.email = "Email is required";
@@ -78,7 +78,7 @@ const Login = () => {
             .finally(() => {
                 // setIsLoading(false);
             });
-        
+
     }
 
     // google Auth
@@ -87,6 +87,26 @@ const Login = () => {
         signInWithPopup(auth, googleProvider)
             .then((result) => {
                 console.log(result);
+
+                const newUser = {
+                    name: result.user.displayName,
+                    email: result.user.email,
+                    image: result.user.photoURL,
+                };
+
+                // creat users in the database
+                fetch('http://localhost:3000/users', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(newUser)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('data after user save', data)
+                    })
+
                 toast.success("Login successful!");
                 navigate(location.state || '/');
             })
@@ -136,15 +156,14 @@ const Login = () => {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    className={`block w-full px-3 py-3 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-black ${
-                                            errors.email ? 'border-red-500' : 'border-gray-300'
+                                    className={`block w-full px-3 py-3 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-black ${errors.email ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Enter your email"
                                 />
                             </div>
-                                {errors.email && (
-                                    <p className="text-red-500 text-sm">{errors.email}</p>
-                                )}
+                            {errors.email && (
+                                <p className="text-red-500 text-sm">{errors.email}</p>
+                            )}
 
                             {/* Password Input */}
                             <div data-aos="fade-up" data-aos-delay="550">
@@ -167,8 +186,8 @@ const Login = () => {
                                 </button>
                             </div>
                             {errors.password && (
-                                    <p className="text-red-500 text-sm">{errors.password}</p>
-                                )}
+                                <p className="text-red-500 text-sm">{errors.password}</p>
+                            )}
 
                             {/* Forgot Password */}
                             <div className="flex items-center justify-between" data-aos="fade-up" data-aos-delay="600">
