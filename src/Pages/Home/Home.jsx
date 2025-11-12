@@ -19,6 +19,9 @@ import {
   FaRulerCombined
 } from 'react-icons/fa';
 import LatestProperties from '../../Components/LatestProperties/LatestProperties';
+import HomeNestCarousel from './HomeNestCarousel';
+import WhyChoseUs from './WhyChoseUs';
+import ReviewsSection from './ReviewsSection';
 
 const latestPropertiesPromise = fetch('http://localhost:3000/latest-properties').then(res => res.json())
 
@@ -138,186 +141,24 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Slider */}
-      <section className="relative h-[70vh]">
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          navigation
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 5000 }}
-          loop={true}
-          className="h-full"
-        >
-          {sliderData.map((slide) => (
-            <SwiperSlide key={slide.id}>
-              <div 
-                className="relative h-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${slide.image})` }}
-              >
-                <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-                <div className="relative z-10 flex items-center justify-center h-full">
-                  <div className="text-center text-white px-4">
-                    <h1 
-                      className="text-4xl md:text-6xl font-bold mb-4"
-                      data-aos="fade-up"
-                    >
-                      {slide.title}
-                    </h1>
-                    <p 
-                      className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto"
-                      data-aos="fade-up"
-                      data-aos-delay="200"
-                    >
-                      {slide.description}
-                    </p>
-                    <button
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition duration-300"
-                      data-aos="fade-up"
-                      data-aos-delay="400"
-                    >
-                      {slide.buttonText}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
+    <HomeNestCarousel></HomeNestCarousel>
 
       {/* Latest Properties Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 
-              className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
-              data-aos="fade-up"
-            >
-              Latest Properties
-            </h2>
-            <p 
-              className="text-gray-600 text-lg max-w-2xl mx-auto"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              Discover our handpicked selection of premium properties
-            </p>
-          </div>
+          
 
           <LatestProperties latestPropertiesPromise={latestPropertiesPromise}></LatestProperties>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 
-              className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
-              data-aos="fade-up"
-            >
-              Why Choose HomeNest?
-            </h2>
-            <p 
-              className="text-gray-600 text-lg max-w-2xl mx-auto"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              Experience the difference with our premium real estate services
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {whyChooseUs.map((item, index) => (
-              <div
-                key={index}
-                className="text-center p-6 rounded-lg hover:shadow-lg transition duration-300"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-8 h-8 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+     <WhyChoseUs></WhyChoseUs>
 
 
 
       {/* Extra Section 2: Testimonials */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 
-              className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
-              data-aos="fade-up"
-            >
-              What Our Clients Say
-            </h2>
-            <p 
-              className="text-gray-600 text-lg"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              Real experiences from satisfied customers
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                name: "Sarah Johnson",
-                role: "Property Buyer",
-                content: "HomeNest made finding our dream home so easy! The platform is user-friendly and the support team was incredibly helpful.",
-                rating: 5
-              },
-              {
-                name: "Michael Chen",
-                role: "Property Seller",
-                content: "Sold my apartment in record time with HomeNest. Their marketing and professional services are top-notch.",
-                rating: 5
-              },
-              {
-                name: "Emily Davis",
-                role: "Renter",
-                content: "Found the perfect rental through HomeNest. The verification process gave me confidence in my choice.",
-                rating: 5
-              }
-            ].map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-lg"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <FaStar key={i} className="w-5 h-5 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-4 italic">"{testimonial.content}"</p>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                    <FaCheck className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">{testimonial.name}</h4>
-                    <p className="text-gray-600 text-sm">{testimonial.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ReviewsSection></ReviewsSection>
     </div>
   );
 };

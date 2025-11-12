@@ -149,7 +149,7 @@ const AddProperty = () => {
 
     const currentTime = new Date().toISOString();
     const newPropertis = {
-      seller_email: formData.email,
+      seller_email: formData.userEmail,
       seller_name: formData.userName,
       Property_Name: formData.propertyName,
       Category: formData.category,

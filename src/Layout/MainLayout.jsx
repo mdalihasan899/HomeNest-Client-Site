@@ -5,8 +5,8 @@ import Navbar from '../Components/Navbar/Navbar';
 
 const MainLayout = () => {
     return (
-        <div>
-            <div className=' bg-white'>
+        <div className='bg-white'>
+            <div className=' sticky top-0 z-50'>
                 <Navbar></Navbar>
             </div>
             <Outlet></Outlet>

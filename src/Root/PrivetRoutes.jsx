@@ -9,7 +9,6 @@ const PrivetRoutes = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loadding, setLoading] = useState(true);
     const location = useLocation();
-    console.log(location);
 
     // track user login/logout
     useEffect(() => {
