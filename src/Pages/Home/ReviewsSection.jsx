@@ -304,25 +304,7 @@ const ReviewsSection = () => {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl p-12 shadow-2xl">
-            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Ready to Share Your Experience?
-            </h3>
-            <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
-              Join our community of satisfied customers and help others make the right choice
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                Write a Review
-              </button>
-              <button className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105">
-                See All Reviews
-              </button>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </section>
   );

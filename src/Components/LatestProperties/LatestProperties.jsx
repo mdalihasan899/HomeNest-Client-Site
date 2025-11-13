@@ -85,34 +85,10 @@ const LatestProperties = ({ latestPropertiesPromise }) => {
                                     </span>
                                 </div>
 
-                                {/* Favorite Button */}
-                                <button 
-                                    onClick={(e) => handleAddToFavorites(e, property._id)}
-                                    className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-600 hover:text-red-500 w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
-                                >
-                                    <TbHeart className="w-5 h-5" />
-                                </button>
+                                
 
                                 {/* Gradient Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                                {/* Quick Stats Overlay */}
-                                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-white opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                                    <div className="flex items-center gap-4 bg-black/30 backdrop-blur-sm px-3 py-2 rounded-full">
-                                        <div className="flex items-center gap-1">
-                                            <TbBed className="w-4 h-4" />
-                                            <span className="text-sm font-medium">3 Beds</span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <TbBath className="w-4 h-4" />
-                                            <span className="text-sm font-medium">2 Baths</span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <TbRuler className="w-4 h-4" />
-                                            <span className="text-sm font-medium">1200 sqft</span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                             {/* Content Section */}
@@ -139,19 +115,7 @@ const LatestProperties = ({ latestPropertiesPromise }) => {
                                     {property.Description}
                                 </p>
 
-                                {/* Amenities */}
-                                <div className="flex gap-3 mb-6">
-                                    {getAmenities(property.Category).map((amenity, index) => (
-                                        <div 
-                                            key={index}
-                                            className="flex items-center gap-1 bg-gray-50 px-3 py-2 rounded-lg"
-                                            title={amenity.name}
-                                        >
-                                            {amenity.icon}
-                                            <span className="text-xs text-gray-600 font-medium">{amenity.name}</span>
-                                        </div>
-                                    ))}
-                                </div>
+                                
 
                                 {/* Price and CTA */}
                                 <div className="flex justify-between items-center pt-4 border-t border-gray-100">

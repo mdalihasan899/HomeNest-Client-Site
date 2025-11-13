@@ -4,8 +4,11 @@ import { useParams, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../Firebase/firebase.config';
 
-const UpdateProperty = ({ user }) => {
+const UpdateProperty = () => {
+  const [user, setUser] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -17,39 +20,70 @@ const UpdateProperty = ({ user }) => {
     location: '',
     imageLink: ''
   });
+  // console.log('formData:', formData);
+  // console.log('Property ID:', id);
+
+  const categories = ['Apartment', 'Villa', 'House', 'Condo', 'Townhouse', 'Studio'];
+
+
+  // 🔹 Listen for authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        // Force refresh to get latest user data
+        try {
+          await currentUser.reload();
+          const updatedUser = auth.currentUser;
+          setUser({
+            uid: updatedUser.uid,
+            email: updatedUser.email,
+            displayName: updatedUser.displayName,
+            photoURL: updatedUser.photoURL,
+            emailVerified: updatedUser.emailVerified,
+          });
+        } catch (error) {
+          console.error('Error refreshing user:', error);
+          setUser(currentUser);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+
 
   useEffect(() => {
     AOS.init({ duration: 800 });
     fetchProperty();
   }, [id]);
 
+  // 🔹 Fetch property data from server
   const fetchProperty = async () => {
-    try {
-      // Simulate API call - replace with actual endpoint
-      const mockProperty = {
-        _id: id,
-        propertyName: 'Modern Apartment in Downtown',
-        description: 'Beautiful modern apartment with great amenities',
-        category: 'Apartment',
-        price: 250000,
-        location: 'New York, NY',
-        imageLink: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400',
-        userName: user?.name || 'John Doe',
-        userEmail: user?.email || 'user@example.com'
-      };
+  try {
+    const res = await fetch(`http://localhost:3000/properties/${id}`);
+    if (!res.ok) throw new Error('Failed to fetch property');
 
-      setFormData({
-        propertyName: mockProperty.propertyName,
-        description: mockProperty.description,
-        category: mockProperty.category,
-        price: mockProperty.price,
-        location: mockProperty.location,
-        imageLink: mockProperty.imageLink
-      });
-    } catch (error) {
-      toast.error('Failed to fetch property details');
-    }
-  };
+    const data = await res.json();
+    console.log('Fetched property data:', data);
+
+    setFormData({
+      propertyName: data.Property_Name || '',
+      description: data.Description || '',
+      category: data.Category || '',
+      price: data.Price || '',
+      location: data.Location || '',
+      imageLink: data.Image || ''
+    });
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to load property details');
+  }
+};
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,25 +93,45 @@ const UpdateProperty = ({ user }) => {
     }));
   };
 
+  // 🔹 Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    const updatedProperty = {
+      Property_Name: formData.propertyName,
+      Description: formData.description,
+      Category: formData.category,
+      Price: formData.price,
+      Location: formData.location,
+      Image: formData.imageLink,
+      seller_name: user?.displayName || 'Demo User',
+      seller_email: user?.email || 'demo@example.com'
+    };
+
     try {
-      // Simulate API call - replace with actual update endpoint
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success('Property updated successfully!');
-      navigate(`/property/${id}`);
+      const res = await fetch(`http://localhost:3000/properties/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedProperty)
+      });
+      const result = await res.json();
+      if (result.modifiedCount > 0 || result.success) {
+        toast.success('Property updated successfully!');
+        navigate(`/property/${id}`);
+      } else {
+        toast.error('Property update failed or no changes detected');
+      }
+
     } catch (error) {
+      console.error(error);
       toast.error('Failed to update property');
     } finally {
       setLoading(false);
     }
   };
-
-  const categories = ['Apartment', 'Villa', 'House', 'Condo', 'Townhouse', 'Studio'];
-
   return (
     <div className="min-h-screen bg-gray-50 py-8 text-black">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,7 +150,7 @@ const UpdateProperty = ({ user }) => {
                 </label>
                 <input
                   type="text"
-                  value={user?.name || 'John Doe'}
+                  value={user?.displayName || 'John Doe'}
                   readOnly
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
                 />

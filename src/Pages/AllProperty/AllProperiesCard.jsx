@@ -1,6 +1,6 @@
 // AllPropertiesCard.jsx
 import React, { use } from 'react';
-import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { TbCurrencyTaka } from "react-icons/tb";
 
 
@@ -8,12 +8,6 @@ import { TbCurrencyTaka } from "react-icons/tb";
 
 const AllPropertiesCard = ({ allPropertiesCardPromise }) => {
     const allProperties = use(allPropertiesCardPromise);
-    const navigate = useNavigate();
-
-
-    const handleViewDetails = (propertyId) => {
-        navigate(`/property/${propertyId}`);
-    };
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
@@ -61,12 +55,13 @@ const AllPropertiesCard = ({ allPropertiesCardPromise }) => {
                                 <p><TbCurrencyTaka /></p>
                                 <p>{property.Price}</p>
                             </span>
-                            <button
-                                onClick={() => handleViewDetails(property.id)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
-                            >
-                                View Details
-                            </button>
+                            <Link to={`/property/${property._id}`}>
+                                <button
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                                >
+                                    View Details
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

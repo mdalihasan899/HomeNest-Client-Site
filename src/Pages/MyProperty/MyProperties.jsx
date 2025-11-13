@@ -9,7 +9,7 @@ const MyProperties = () => {
   const [user, setUser] = useState(null);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
 
   // Fetch data from API
   useEffect(() => {
@@ -129,8 +129,12 @@ const MyProperties = () => {
               </p>
 
               <div className=" flex justify-between">
-                <Link to={`/update-property/:id`}>
-                  <button className="btn">Update</button></Link>
+                <Link
+                  to={`/update-property/${property._id}`}
+                  className="btn"
+                >
+                  Update Property
+                </Link>
 
                 <button onClick={() => delateProperty(property._id)} className="btn">Delate</button>
 

@@ -7,15 +7,6 @@ const HomeNestCarousel = () => {
 
   const slides = [
     {
-      id: 1,
-      title: "Modern Apartments",
-      description: "Luxurious apartments with stunning city views and premium amenities",
-      image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      icon: <FaBuilding className="text-blue-500" />,
-      features: ["Swimming Pool", "Gym", "24/7 Security"],
-      rating: 4.8
-    },
-    {
       id: 2,
       title: "Luxury Villas",
       description: "Spacious villas with private gardens and premium finishes",
