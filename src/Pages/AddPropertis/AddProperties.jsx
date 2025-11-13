@@ -1,11 +1,21 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import React, { useState, useEffect } from 'react';
-import { FaHome, FaDollarSign, FaMapMarkerAlt, FaImage, FaPlus } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { auth } from '../../Firebase/firebase.config';
+import { 
+  TbHome,
+  TbCurrencyTaka,
+  TbMapPin,
+  TbPhoto,
+  TbUser,
+  TbMail,
+  TbPlus,
+  TbCheck,
+  TbInfoCircle
+} from "react-icons/tb";
 
-const AddProperty = () => {
+const AddProperties = () => {
   const [formData, setFormData] = useState({
     propertyName: '',
     description: '',
@@ -13,8 +23,8 @@ const AddProperty = () => {
     price: '',
     location: '',
     imageLink: '',
-    userEmail: 'user@example.com', // This would come from auth context
-    userName: 'John Doe' // This would come from auth context
+    userEmail: 'user@example.com',
+    userName: 'John Doe'
   });
 
   const [user, setUser] = useState(null);
@@ -41,11 +51,7 @@ const AddProperty = () => {
   // Track user login/logout with better state handling
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-
-      // console.log(currentUser);
-
       if (currentUser) {
-        // Force refresh to get latest user data
         try {
           await currentUser.reload();
           const updatedUser = auth.currentUser;
@@ -53,7 +59,6 @@ const AddProperty = () => {
             email: updatedUser.email,
             displayName: updatedUser.displayName,
           });
-
 
           setFormData(prev => ({
             ...prev,
@@ -72,8 +77,6 @@ const AddProperty = () => {
 
     return () => unsubscribe();
   }, []);
-
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -146,7 +149,6 @@ const AddProperty = () => {
       return;
     }
 
-
     const currentTime = new Date().toISOString();
     const newPropertis = {
       seller_email: formData.userEmail,
@@ -163,7 +165,7 @@ const AddProperty = () => {
     try {
       setIsSubmitting(true);
 
-      const response = await fetch('http://localhost:3000/properties', {
+      const response = await fetch('https://book-management-server-psi.vercel.app/properties', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,14 +176,14 @@ const AddProperty = () => {
       if (response.ok) {
         toast.success('Property added successfully!');
         setFormData({
-          email: '',
-          userName: '',
           propertyName: '',
-          category: '',
           description: '',
-          imageLink: '',
-          location: '',
+          category: '',
           price: '',
+          location: '',
+          imageLink: '',
+          userEmail: formData.userEmail,
+          userName: formData.userName
         });
       } else {
         toast.error('Failed to add property');
@@ -190,37 +192,40 @@ const AddProperty = () => {
       console.error('Error adding property:', error);
       toast.error('Something went wrong!');
     } finally {
-      // ✅ Add complete হলে submit button পুনরায় enable হবে
       setIsSubmitting(false);
     }
   };
 
-
   return (
-    <div className="min-h-screen bg-gray-50 py-12 text-black ">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 py-12 text-bla text-black">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8" data-aos="fade-up">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          <div className="text-center mb-12" data-aos="fade-up">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-lg">
+              <TbPlus className="w-5 h-5" />
+              <span>List Your Property</span>
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
               Add Your Property
             </h1>
-            <p className="text-gray-600 text-lg">
-              Fill out the form below to add your property to HomeNest
+            <p className="text-xl text-gray-400 max-w-md mx-auto ">
+              Fill out the form below to list your property on HomeNest
             </p>
           </div>
 
           {/* Property Form */}
-          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8" data-aos="fade-up" data-aos-delay="200">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+            <form onSubmit={handleSubmit} className="space-y-8">
               {/* Property Name */}
               <div>
-                <label htmlFor="propertyName" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="propertyName" className="block text-lg font-semibold text-gray-900 mb-3">
                   Property Name *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaHome className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <TbHome className="h-5 w-5 text-blue-500" />
                   </div>
                   <input
                     type="text"
@@ -228,19 +233,23 @@ const AddProperty = () => {
                     name="propertyName"
                     value={formData.propertyName}
                     onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.propertyName ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                    className={`block w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-300 ${
+                      errors.propertyName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
+                    }`}
                     placeholder="Enter property name (e.g., Modern Downtown Apartment)"
                   />
                 </div>
                 {errors.propertyName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.propertyName}</p>
+                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <TbInfoCircle className="w-4 h-4" />
+                    {errors.propertyName}
+                  </p>
                 )}
               </div>
 
               {/* Description */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="description" className="block text-lg font-semibold text-gray-900 mb-3">
                   Description *
                 </label>
                 <textarea
@@ -249,12 +258,16 @@ const AddProperty = () => {
                   value={formData.description}
                   onChange={handleChange}
                   rows="4"
-                  className={`block w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.description ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                  className={`block w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-300 resize-none ${
+                    errors.description ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
+                  }`}
                   placeholder="Describe your property in detail (features, amenities, nearby facilities, etc.)"
                 />
                 {errors.description && (
-                  <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <TbInfoCircle className="w-4 h-4" />
+                    {errors.description}
+                  </p>
                 )}
               </div>
 
@@ -262,7 +275,7 @@ const AddProperty = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Category */}
                 <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="category" className="block text-lg font-semibold text-gray-900 mb-3">
                     Category *
                   </label>
                   <select
@@ -270,8 +283,9 @@ const AddProperty = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className={`block w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.category ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                    className={`block w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-300 ${
+                      errors.category ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
+                    }`}
                   >
                     <option value="">Select Category</option>
                     {categories.map((category) => (
@@ -281,18 +295,21 @@ const AddProperty = () => {
                     ))}
                   </select>
                   {errors.category && (
-                    <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <TbInfoCircle className="w-4 h-4" />
+                      {errors.category}
+                    </p>
                   )}
                 </div>
 
                 {/* Price */}
                 <div>
-                  <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                    Price ($) *
+                  <label htmlFor="price" className="block text-lg font-semibold text-gray-900 mb-3">
+                    Price (৳) *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FaDollarSign className="h-5 w-5 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <TbCurrencyTaka className="h-5 w-5 text-blue-500" />
                     </div>
                     <input
                       type="number"
@@ -302,25 +319,29 @@ const AddProperty = () => {
                       onChange={handleChange}
                       min="0"
                       step="0.01"
-                      className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.price ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                      className={`block w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-300 ${
+                        errors.price ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
+                      }`}
                       placeholder="Enter price"
                     />
                   </div>
                   {errors.price && (
-                    <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <TbInfoCircle className="w-4 h-4" />
+                      {errors.price}
+                    </p>
                   )}
                 </div>
               </div>
 
               {/* Location */}
               <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="location" className="block text-lg font-semibold text-gray-900 mb-3">
                   Location *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaMapMarkerAlt className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <TbMapPin className="h-5 w-5 text-blue-500" />
                   </div>
                   <input
                     type="text"
@@ -328,24 +349,28 @@ const AddProperty = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.location ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                    className={`block w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-300 ${
+                      errors.location ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
+                    }`}
                     placeholder="Enter full address, city, or area"
                   />
                 </div>
                 {errors.location && (
-                  <p className="mt-1 text-sm text-red-600">{errors.location}</p>
+                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <TbInfoCircle className="w-4 h-4" />
+                    {errors.location}
+                  </p>
                 )}
               </div>
 
               {/* Image Link */}
               <div>
-                <label htmlFor="imageLink" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="imageLink" className="block text-lg font-semibold text-gray-900 mb-3">
                   Image Link *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaImage className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <TbPhoto className="h-5 w-5 text-blue-500" />
                   </div>
                   <input
                     type="url"
@@ -353,20 +378,24 @@ const AddProperty = () => {
                     name="imageLink"
                     value={formData.imageLink}
                     onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.imageLink ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                    className={`block w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-300 ${
+                      errors.imageLink ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
+                    }`}
                     placeholder="https://example.com/property-image.jpg"
                   />
                 </div>
                 {errors.imageLink && (
-                  <p className="mt-1 text-sm text-red-600">{errors.imageLink}</p>
+                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <TbInfoCircle className="w-4 h-4" />
+                    {errors.imageLink}
+                  </p>
                 )}
 
                 {/* Image Preview */}
                 {formData.imageLink && isValidUrl(formData.imageLink) && (
-                  <div className="mt-3">
-                    <p className="text-sm text-gray-600 mb-2">Image Preview:</p>
-                    <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-gray-700 mb-3">Image Preview:</p>
+                    <div className="w-full h-48 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl overflow-hidden border-2 border-gray-200">
                       <img
                         src={formData.imageLink}
                         alt="Property preview"
@@ -383,57 +412,71 @@ const AddProperty = () => {
               {/* User Info (Read-only) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="userEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="userEmail" className="block text-lg font-semibold text-gray-900 mb-3">
                     Your Email
                   </label>
-                  <input
-                    type="email"
-                    id="userEmail"
-                    name="userEmail"
-                    value={formData.userEmail}
-                    readOnly
-                    className="block w-full px-3 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <TbMail className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <input
+                      type="email"
+                      id="userEmail"
+                      name="userEmail"
+                      value={formData.userEmail}
+                      readOnly
+                      className="block w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="userName" className="block text-lg font-semibold text-gray-900 mb-3">
                     Your Name
                   </label>
-                  <input
-                    type="text"
-                    id="userName"
-                    name="userName"
-                    value={formData.userName}
-                    readOnly
-                    className="block w-full px-3 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <TbUser className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <input
+                      type="text"
+                      id="userName"
+                      name="userName"
+                      value={formData.userName}
+                      readOnly
+                      className="block w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Submit Button */}
-              <div className="pt-4">
+              <div className="pt-6">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition duration-300 ${isSubmitting
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
-                    } text-white shadow-lg`}
+                  className={`w-full py-5 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform ${
+                    isSubmitting
+                      ? 'bg-gray-400 cursor-not-allowed scale-100'
+                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl'
+                  } text-white`}
                 >
                   {isSubmitting ? (
-                    <div className="flex items-center justify-center">
-                      <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-3"></div>
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="w-6 h-6 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
                       Adding Property...
                     </div>
                   ) : (
-                    'Add Property'
+                    <div className="flex items-center justify-center gap-2">
+                      <TbPlus className="w-6 h-6" />
+                      Add Property
+                    </div>
                   )}
                 </button>
               </div>
 
               {/* Form Help Text */}
-              <div className="text-center">
+              <div className="text-center pt-4">
                 <p className="text-sm text-gray-500">
                   * Required fields. Your property will be reviewed before appearing on the platform.
                 </p>
@@ -442,14 +485,32 @@ const AddProperty = () => {
           </div>
 
           {/* Tips Section */}
-          <div className="mt-8 bg-blue-50 rounded-lg p-6" data-aos="fade-up" data-aos-delay="400">
-            <h3 className="text-lg font-semibold text-blue-800 mb-3">Tips for a Great Listing:</h3>
-            <ul className="text-sm text-blue-700 space-y-2">
-              <li>• Use high-quality, clear images of your property</li>
-              <li>• Write a detailed description highlighting key features</li>
-              <li>• Be accurate with pricing and location information</li>
-              <li>• Mention nearby amenities and transportation</li>
-              <li>• Include all relevant property details</li>
+          <div className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100" data-aos="fade-up" data-aos-delay="400">
+            <div className="flex items-center gap-3 mb-4">
+              <TbInfoCircle className="w-6 h-6 text-blue-600" />
+              <h3 className="text-xl font-bold text-blue-800">Tips for a Great Listing:</h3>
+            </div>
+            <ul className="text-blue-700 space-y-3">
+              <li className="flex items-center gap-3">
+                <TbCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span>Use high-quality, clear images of your property</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <TbCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span>Write a detailed description highlighting key features</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <TbCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span>Be accurate with pricing and location information</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <TbCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span>Mention nearby amenities and transportation</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <TbCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span>Include all relevant property details</span>
+              </li>
             </ul>
           </div>
         </div>
@@ -466,9 +527,10 @@ const AddProperty = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        theme="light"
       />
     </div>
   );
 };
 
-export default AddProperty;
+export default AddProperties;

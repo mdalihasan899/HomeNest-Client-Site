@@ -138,7 +138,8 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="bg-white/65 backdrop-blur-md shadow-xl sticky top-0 z-50 transition-all duration-300">
+      <nav className="bg-white/65
+      backdrop-blur-md shadow-xl sticky top-0 z-50 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
@@ -211,6 +212,8 @@ const Navbar = () => {
                     {getUserAvatar()}
                   </button>
 
+                  
+
                   {isDropdownOpen && (
                     <div
                       className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl py-3 z-50 border border-gray-200 backdrop-blur-md"
@@ -247,6 +250,7 @@ const Navbar = () => {
                   )}
                 </div>
               )}
+
 
               {/* Mobile Menu Button */}
               <button
