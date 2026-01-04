@@ -10,6 +10,9 @@ import UpdateProperty from "../Components/Update-Property/UpdateProperty";
 import ViewDetails from "../Components/View-Details/ViewDetails";
 import MyRatings from "../Pages/My-Ratting/MyRatings";
 import AllProperties from "../Pages/AllProperty/AllProperties";
+import DashboardLayout from "../Layout/DashboardLayout";
+import MyProfile from "../Pages/Dashboard/MyProfile";
+import MyReviewPage from "../Pages/Dashboard/MyReviews";
 
 const router = createBrowserRouter([
     {
@@ -38,12 +41,7 @@ const router = createBrowserRouter([
                     <AddProperty></AddProperty>
                 </PrivetRoutes>
             },
-            {
-                path: '/my-properties',
-                element: <PrivetRoutes>
-                    <MyProperties></MyProperties>
-                </PrivetRoutes>
-            },
+            
             {
                 path: '/update-property/:id',
                 element: <PrivetRoutes>
@@ -52,16 +50,39 @@ const router = createBrowserRouter([
             },
             {
                 path: '/property/:id',
-                element: <PrivetRoutes>
-                    <ViewDetails></ViewDetails>
-                </PrivetRoutes>
+                element: <ViewDetails></ViewDetails>
+            },
+
+        ]
+    },
+    {
+        path: "/",
+        element: <DashboardLayout />,
+        children: [
+            {
+                path: "/dashboard",
+                element: <PrivetRoutes><MyProfile /></PrivetRoutes>
+            },
+            {
+                path: "/my-reviews",
+                element: <PrivetRoutes><MyReviewPage /></PrivetRoutes>
+            },
+            {
+                path: "/my-profile",
+                element: <PrivetRoutes><MyProfile /></PrivetRoutes>
             },
             {
                 path: '/my-ratings',
                 element: <PrivetRoutes>
                     <MyRatings></MyRatings>
                 </PrivetRoutes>
-            }
+            },
+            {
+                path: '/my-properties',
+                element: <PrivetRoutes>
+                    <MyProperties></MyProperties>
+                </PrivetRoutes>
+            },
         ]
     }
 ])

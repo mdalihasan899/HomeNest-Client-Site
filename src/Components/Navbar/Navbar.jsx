@@ -114,10 +114,9 @@ const Navbar = () => {
   const navItems = [
     { path: '/', label: 'Home' },
     { path: '/properties', label: 'All Properties' },
-    { path: user ? '/add-properties' : '/login', label: 'Add Properties' },
     ...(user ? [
-      { path: '/my-properties', label: 'My Properties' },
-      { path: '/my-ratings', label: 'My Ratings' }
+      { path: '/dashboard', label: 'Dashboard' },
+      { path: '/add-properties', label: 'Add Properties' }
     ] : [])
   ];
 
